@@ -117,6 +117,7 @@ export default class FirebaseFileUploader extends Component<Props> {
         }
 
         task.on('state_changed', function (snapshot) {
+          console.log('onProgress', onProgress);
           return onProgress && onProgress(Math.round(100 * snapshot.bytesTransferred / snapshot.totalBytes), task);
         }, function (error) {
           return onUploadError && onUploadError(error, task);
