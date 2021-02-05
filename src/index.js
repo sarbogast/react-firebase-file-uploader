@@ -116,14 +116,13 @@ export default class FirebaseFileUploader extends Component<Props> {
           onUploadStart(file, task);
         }
 
-        task.on('state_changed', function (snapshot) {
-          console.log('onProgress', onProgress);
-          return onProgress && onProgress(Math.round(100 * snapshot.bytesTransferred / snapshot.totalBytes), task);
-        }, function (error) {
+        task.on('state_changed', (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          return onProgress && onProgress(Math.round(progress), task);
+        }, (error) => {
           return onUploadError && onUploadError(error, task);
-        }, function () {
-          return storageRef.child(filenameToUse).getMetadata().then(function (metadata) {
-            //return metadata.name;
+        }, () => {
+          return storageRef.child(filenameToUse).getMetadata().then((metadata) => {
             _this2.removeTask(task);
             return onUploadSuccess && onUploadSuccess(metadata.name, task);
           });
